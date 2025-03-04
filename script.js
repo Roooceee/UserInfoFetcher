@@ -9,7 +9,7 @@ main()
 
 const body = document.querySelector("body")
 
-// Permet de faire une requete a l'user
+// Permet de faire une requete
 async function request(url){
 
    try {
@@ -29,10 +29,13 @@ async function request(url){
    }
 }
 
+let usersData = [];
+
 // Crée un select avec la liste des users
 async function createSelectUsers(){
 
    const users = await request("https://jsonplaceholder.typicode.com/users")
+   usersData = users
    let nameUsers = ""
 
    if(users!=null){
@@ -40,10 +43,11 @@ async function createSelectUsers(){
          nameUsers += `<option value='${element.id}'>${element.name}</option>`
       });
    
-      let select = `<select>${nameUsers}</select>`
       let formChooseUser = `<form id='chooseUser'>
                                        <h2>User</h2>
-                                          ${select}
+                                          <select>
+                                          ${nameUsers}
+                                          </select>
                                        <input type="submit" value="Show Details">                                 
                                     </form>`
    
@@ -54,10 +58,9 @@ async function createSelectUsers(){
 
 // Crée une div avec les infos d'un user en param via une requete a l'API
 async function createDivUser(id){
-   const idUser = await request(`https://jsonplaceholder.typicode.com/users?id=${id}`)
-   if(idUser!=null){
+   const user = usersData.find(u => u.id === id); 
+   if(user!= undefined){
       
-      const user = idUser[0]
       const nameUser = user.name
       const usernameUser = user.username
       const emailUser = user.email
@@ -70,7 +73,7 @@ async function createDivUser(id){
       const catchCompanyUser = user.company.catchPhrase
       const bsCompanyUser = user.company.bs
    
-      articleUser = `<article id='infoUser'>
+      let articleUser = `<article id='infoUser'>
          <h3>${nameUser}</h3>
          <p>Pseudo : ${usernameUser}</p>
          <p>Mail : <a href="mailto:">${emailUser}</a></p>
